@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ("django-insecure-__a-u30pii=rp1qde9t@zdmykl"
-                "=my#x0679qk#k895i7f#=+c=")
+              "=my#x0679qk#k895i7f#=+c=")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -100,7 +100,7 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': ('django.contrib.auth.password_validation.'
-                    'MinimumLengthValidator'),
+                 'MinimumLengthValidator'),
         'OPTIONS': {
             'min_length': 3,
         }

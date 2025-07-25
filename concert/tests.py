@@ -63,7 +63,7 @@ class SongViewTest(TestCase):
         # Check for song title
         self.assertContains(response,
                             "duis faucibus accumsan odio curabitur convallis")
-    
+
         # Check for part of the lyrics
         self.assertContains(response, "Morbi non lectus.")
 
