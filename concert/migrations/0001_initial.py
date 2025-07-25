@@ -23,7 +23,8 @@ class Migration(migrations.Migration):
                 ("event_country", models.CharField(max_length=255)),
                 ("event_state", models.CharField(max_length=255)),
                 ("event_city", models.CharField(max_length=255)),
-                ("event_date", models.DateField(default=datetime.datetime.now)),
+                ("event_date",
+                    models.DateField(default=datetime.datetime.now)),
             ],
             options={
                 "managed": False,

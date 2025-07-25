@@ -1,14 +1,13 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.hashers import make_password
 
 from concert.forms import LoginForm, SignUpForm
 from concert.models import Concert, ConcertAttending
-import requests as req
+import requests
 
 
 # Create your views here.
@@ -19,9 +18,15 @@ def signup(request):
         password = request.POST.get("password")
         user = User.objects.filter(username=username).first()
         if user:
-            return render(request, 'signup.html', {"form":SignUpForm, "message":"User already exists"})
+            return render(request,
+                            'signup.html',
+                            {
+                                "form": SignUpForm,
+                                "message": "User already exists"
+                            })
         else:
-            user = User.objects.create(username=username, password=make_password(password))
+            user = User.objects.create(username=username,
+                                        password=make_password(password))
             login(request, user)
             return HttpResponseRedirect(reverse('index'))
     else:
@@ -33,7 +38,14 @@ def index(request):
 
 
 def songs(request):
-    songs = {"songs":[{"id":1,"title":"duis faucibus accumsan odio curabitur convallis","lyrics":"Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis."}]}
+    songs = {"songs": [{"id":1,
+                        "title": "duis faucibus accumsan odio curabitur convallis",
+                        "lyrics": ('Morbi non lectus.'
+                                    ' Aliquam sit amet diam in magna bibendum '
+                                    'imperdiet. Nullam orci pede, venenatis '
+                                    'non, sodales sed, tincidunt eu, felis.')
+                        }]
+            }
     return render(request, "songs.html", {"songs": songs["songs"]})
 
 
@@ -53,24 +65,29 @@ def login_view(request):
     # Initializes the form. If it's a POST request, it's pre-filled with data.
     # For a GET request, it's empty.
     # The 'request' argument is necessary for AuthenticationForm.
-    form = LoginForm(request, data=request.POST if request.method == "POST" else None)
+    form = LoginForm(request,
+                    data=request.POST if request.method == "POST" else None)
 
     if request.method == "POST":
         if form.is_valid():
-            # If the form is valid, it means the user has been successfully authenticated
+            # If the form is valid, it means the user
+            # has been successfully authenticated
             user = form.get_user()
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         # If the form is not valid, it already contains errors,
-        # and the code outside the 'if request.method == "POST"' will handle the rendering.
-    
-    # For GET requests, or if the POST was not valid,
-    # we display the login page with the form (which contains errors if the POST failed).
+        # and the code outside the 'if request.method == "POST"'
+        # will handle the rendering.
+
+    # For GET requests, or if the POST was not valid, we display
+    # the login page with the form (which contains errors if the POST failed).
     return render(request, "login.html", {"form": form})
+
 
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
+
 
 def concerts(request):
     if request.user.is_authenticated:
@@ -80,7 +97,7 @@ def concerts(request):
             try:
                 status = item.attendee.filter(
                     user=request.user).first().attending
-            except:
+            except AttributeError:
                 status = "-"
             lst_of_concert.append({
                 "concert": item,
@@ -96,12 +113,20 @@ def concert_detail(request, id):
         obj = Concert.objects.get(pk=id)
         try:
             status = obj.attendee.filter(user=request.user).first().attending
-        except:
+        except AttributeError:
             status = "-"
-        return render(request, "concert_detail.html", {"concert_details": obj, "status": status, "attending_choices": ConcertAttending.AttendingChoices.choices})
+        return render(
+                        request,
+                        "concert_detail.html",
+                        {
+                            "concert_details": obj,
+                            "status": status,
+                            "attending_choices":
+                            ConcertAttending.AttendingChoices.choices
+                        }
+                    )
     else:
         return HttpResponseRedirect(reverse("login"))
-    pass
 
 
 def concert_attendee(request):
