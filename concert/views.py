@@ -19,7 +19,7 @@ def signup(request):
         password = request.POST.get("password")
         user = User.objects.filter(username=username).first()
         if user:
-            return render(request, 'signup.html', SignUpForm("user already exist"))
+            return render(request, 'signup.html', {"form":SignUpForm, "message":"User already exists"})
         else:
             user = User.objects.create(username=username, password=make_password(password))
             login(request, user)
@@ -50,18 +50,23 @@ def photos(request):
 
 
 def login_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        try:
-            user = User.objects.get(username=username)
+    # Initializes the form. If it's a POST request, it's pre-filled with data.
+    # For a GET request, it's empty.
+    # The 'request' argument is necessary for AuthenticationForm.
+    form = LoginForm(request, data=request.POST if request.method == "POST" else None)
 
-            if user.check_password(password):
-                login(request, user)
-                return HttpResponseRedirect(reverse("index"))
-        except User.DoesNotExist:
-            return render(request, "login.html", {"form":LoginForm})
-    return render(request, "login.html", {"form":LoginForm})
+    if request.method == "POST":
+        if form.is_valid():
+            # If the form is valid, it means the user has been successfully authenticated
+            user = form.get_user()
+            login(request, user)
+            return HttpResponseRedirect(reverse("index"))
+        # If the form is not valid, it already contains errors,
+        # and the code outside the 'if request.method == "POST"' will handle the rendering.
+    
+    # For GET requests, or if the POST was not valid,
+    # we display the login page with the form (which contains errors if the POST failed).
+    return render(request, "login.html", {"form": form})
 
 def logout_view(request):
     logout(request)
