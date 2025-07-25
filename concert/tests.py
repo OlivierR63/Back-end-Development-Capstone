@@ -5,6 +5,7 @@ from concert.models import Concert, ConcertAttending
 from concert.forms import LoginForm
 from datetime import date
 
+
 # Checks that the "index" view uses the right template
 # and returns the status code 200
 class IndexViewTest(TestCase):
@@ -39,14 +40,15 @@ class SongViewTest(TestCase):
         self.assertTemplateUsed(response, 'songs.html')
 
         # Define the expected static data that the view should pass.
-        expected_songs_data = [{"id": 1,
-                                "title": "duis faucibus accumsan odio curabitur convallis",
-                                "lyrics": ("Morbi non lectus. Aliquam sit "
-                                            "amet diam in magna bibendum "
-                                            "imperdiet. Nullam orci pede, "
-                                            "venenatis non, sodales sed, "
-                                            "tincidunt eu, felis.")
-                                        }]
+        expected_songs_data = [{
+                    "id": 1,
+                    "title": "duis faucibus accumsan odio curabitur convallis",
+                    "lyrics": ("Morbi non lectus. Aliquam sit "
+                               "amet diam in magna bibendum "
+                               "imperdiet. Nullam orci pede, "
+                               "venenatis non, sodales sed, "
+                               "tincidunt eu, felis.")
+                            }]
 
         # Assert that the 'songs' key is present in the template context.
         self.assertIn('songs', response.context)
@@ -61,7 +63,7 @@ class SongViewTest(TestCase):
         # Check for song title
         self.assertContains(response,
                             "duis faucibus accumsan odio curabitur convallis")
-        
+    
         # Check for part of the lyrics
         self.assertContains(response, "Morbi non lectus.")
 
@@ -112,7 +114,7 @@ class LoginViewTest(TestCase):
     def setUp(self):
         # Create a user for successful login tests
         self.user = User.objects.create_user(username='testuser',
-                                                password='testpassword123')
+                                             password='testpassword123')
 
     # Tests the initial display of the login form (GET request)
     def test_login_view_get(self):
@@ -138,7 +140,7 @@ class LoginViewTest(TestCase):
         # Verify that the user is logged in
         self.assertTrue('_auth_user_id' in self.client.session)
         self.assertEqual(self.client.session['_auth_user_id'],
-                            str(self.user.pk))
+                         str(self.user.pk))
 
     # Tests failed login with incorrect password (POST request)
     def test_login_view_post_incorrect_password(self):
@@ -192,7 +194,7 @@ class LogoutViewTest(TestCase):
         # Create and log in a user before each test
         # that requires an authenticated user.
         self.user = User.objects.create_user(username='testuser',
-                                                password='testpassword')
+                                             password='testpassword')
 
         # Simulate logging in the user. This is crucial
         # for testing logout functionality.
@@ -272,7 +274,7 @@ class SignupViewTest(TestCase):
     def test_signup_view_post_user_exists(self):
         # Create an existing user to simulate a conflict.
         User.objects.create_user(username='existinguser',
-                                    password='oldpassword')
+                                 password='oldpassword')
 
         # Ensure that this user is present before the POST request.
         self.assertEqual(User.objects.count(), 1)
@@ -307,7 +309,7 @@ class ConcertsViewTest(TestCase):
     def setUp(self):
         # Create a test user for login scenarios.
         self.user = User.objects.create_user(username='testuser',
-                                                password='testpassword')
+                                             password='testpassword')
 
         # Create some concert instances for testing data display.
         self.concert1 = Concert.objects.create(
@@ -365,11 +367,11 @@ class ConcertsViewTest(TestCase):
         # Assert that 'concerts' data is present in the template context.
         self.assertIn('concerts', response.context)
 
-        # Verify the structure and content of the 'concerts' list in the context.
-        # It should contain a list of dictionaries with 'concert' objects
-        # and their 'status'.
+        # Verify the structure and content of the 'concerts' list
+        # in the context. It should contain a list of dictionaries
+        # with 'concert' objects and their 'status'.
         context_concerts = response.context['concerts']
-        self.assertEqual(len(context_concerts), 2) # Expect 2 concerts
+        self.assertEqual(len(context_concerts), 2)  # Expect 2 concerts
 
         # Sort the context_concerts by concert_name for consistent comparison,
         # as query order might vary
@@ -378,14 +380,15 @@ class ConcertsViewTest(TestCase):
         # Check details for concert1 (Rock Festival)
         self.assertEqual(context_concerts[1]['concert'], self.concert1)
         self.assertEqual(context_concerts[1]['status'],
-                            ConcertAttending.AttendingChoices.ATTENDING)  # Should be 'Attending' for testuser
+                         ConcertAttending.AttendingChoices.ATTENDING)
 
         # Check details for concert2 (Jazz Night)
         self.assertEqual(context_concerts[0]['concert'], self.concert2)
         self.assertEqual(context_concerts[0]['status'],
-                            ConcertAttending.AttendingChoices.NOTHING)  # Should be '-' for testuser
+                         ConcertAttending.AttendingChoices.NOTHING)
 
-        # Assert that some concert names and statuses are present in the HTML response.
+        # Assert that some concert names and statuses are present
+        # in the HTML response.
         self.assertContains(response,
                             self.concert1.concert_name)
         self.assertContains(response,

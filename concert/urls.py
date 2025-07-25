@@ -9,6 +9,10 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
     path("signup/", views.signup, name="signup"),
     path("concert/", views.concerts, name="concerts"),
-    path("concert-detail/<int:id>", views.concert_detail, name="concert_detail"),
-    path("concert_attendee/", views.concert_attendee, name="concert_attendee"),
+    path("concert-detail/<int:id>",
+            views.concert_detail,
+            name="concert_detail"),
+    path("concert_attendee/",
+            views.concert_attendee,
+            name="concert_attendee"),
 ]

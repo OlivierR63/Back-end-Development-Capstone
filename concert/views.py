@@ -7,7 +7,6 @@ from django.contrib.auth.hashers import make_password
 
 from concert.forms import LoginForm, SignUpForm
 from concert.models import Concert, ConcertAttending
-import requests
 
 
 # Create your views here.
@@ -19,14 +18,14 @@ def signup(request):
         user = User.objects.filter(username=username).first()
         if user:
             return render(request,
-                            'signup.html',
-                            {
-                                "form": SignUpForm,
-                                "message": "User already exists"
-                            })
+                          'signup.html',
+                          {
+                              "form": SignUpForm,
+                              "message": "User already exists"
+                          })
         else:
             user = User.objects.create(username=username,
-                                        password=make_password(password))
+                                       password=make_password(password))
             login(request, user)
             return HttpResponseRedirect(reverse('index'))
     else:
@@ -38,14 +37,15 @@ def index(request):
 
 
 def songs(request):
-    songs = {"songs": [{"id":1,
-                        "title": "duis faucibus accumsan odio curabitur convallis",
+    songs = {"songs": [{"id": 1,
+                        "title": ("duis faucibus accumsan odio "
+                                    "curabitur convallis"),
                         "lyrics": ('Morbi non lectus.'
-                                    ' Aliquam sit amet diam in magna bibendum '
-                                    'imperdiet. Nullam orci pede, venenatis '
+                                    ' Aliquam sit amet diam in magna bibendum'
+                                    ' imperdiet. Nullam orci pede, venenatis '
                                     'non, sodales sed, tincidunt eu, felis.')
                         }]
-            }
+                }
     return render(request, "songs.html", {"songs": songs["songs"]})
 
 
@@ -66,7 +66,7 @@ def login_view(request):
     # For a GET request, it's empty.
     # The 'request' argument is necessary for AuthenticationForm.
     form = LoginForm(request,
-                    data=request.POST if request.method == "POST" else None)
+                      data=request.POST if request.method == "POST" else None)
 
     if request.method == "POST":
         if form.is_valid():
