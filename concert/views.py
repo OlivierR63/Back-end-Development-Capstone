@@ -38,9 +38,29 @@ def index(request):
 
 
 def songs(request):
+    # Define the URL for fetching songs data
     song_url = "http://songs-sn-labs-olivierrocha.labs-prod-openshift-san-a45631dc5778dc6371c67d206ba9ae5c-0000.us-east.containers.appdomain.cloud/song"
-    songs = req.get(song_url).json()
-    return render(request, "songs.html", {"songs": songs["songs"]})
+
+    try:
+        # Send a GET request to the specified URL
+        response = req.get(song_url)
+
+        # Check if the request was successful
+        response.raise_for_status()
+
+        # Parse the JSON response into a Python dictionary
+        songs = response.json()
+
+        # Render the songs data into the template
+        return render(request, "songs.html", {"songs": songs["songs"]})
+
+    except req.exceptions.RequestException as e:
+        # Print any request-related errors to the console
+        print(f"Request failed: {e}")
+
+        # Handle the error by rendering the template with an empty list of songs
+        # This ensures that the page still loads even if there's an error fetching the data
+        return render(request, "songs.html", {"songs": []})
 
 
 def photos(request):

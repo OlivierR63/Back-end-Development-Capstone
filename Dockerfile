@@ -13,13 +13,13 @@ ENV APP=/app
 WORKDIR /app
 
 # 3. insert code to copy the requirements.txt file to $APP
-COPY requirements.txt .
+COPY requirements.txt $APP
 
 # 4. insert code to install requirements from requirements.txt
 RUN pip install -r requirements.txt
 
 # 5. insert code to copy the rest of the files into $APP
-COPY . .
+COPY . $APP
 
 # 6. insert code to expose the port here
 EXPOSE 8000
