@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import make_password
 
 from concert.forms import LoginForm, SignUpForm
 from concert.models import Concert, ConcertAttending
+import requests as req
 
 
 # Create your views here.
@@ -37,29 +38,14 @@ def index(request):
 
 
 def songs(request):
-    songs = {"songs": [
-        {
-            "id": 1,
-            "title": ("duis faucibus accumsan odio "
-                      "curabitur convallis"),
-            "lyrics": ('Morbi non lectus.'
-                       ' Aliquam sit amet diam in magna bibendum'
-                       ' imperdiet. Nullam orci pede, venenatis '
-                       'non, sodales sed, tincidunt eu, felis.')
-        }
-    ]}
+    song_url = "http://songs-sn-labs-olivierrocha.labs-prod-openshift-san-a45631dc5778dc6371c67d206ba9ae5c-0000.us-east.containers.appdomain.cloud/song"
+    songs = req.get(song_url).json()
     return render(request, "songs.html", {"songs": songs["songs"]})
 
 
 def photos(request):
-    photos = [{
-                "id": 1,
-                "pic_url": "http://dummyimage.com/136x100.png/5fa2dd/ffffff",
-                "event_country": "United States",
-                "event_state": "District of Columbia",
-                "event_city": "Washington",
-                "event_date": "11/16/2022"
-            }]
+    picture_url = "https://pictures.1ycjctbe2cvb.us-south.codeengine.appdomain.cloud"
+    photos = req.get(picture_url).json()
     return render(request, "photos.html", {"photos": photos})
 
 

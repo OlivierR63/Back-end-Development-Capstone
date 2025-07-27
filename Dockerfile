@@ -1,4 +1,5 @@
 # 1. insert code to python:3.9.16-slim as base image
+FROM python:3.9.16-slim
 
 ENV PYTHONBUFFERED 1
 ENV PYTHONWRITEBYTECODE 1
